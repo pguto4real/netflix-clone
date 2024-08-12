@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Header from "../components/Header";
 import Banner from "@/components/Banner";
-import requests from "./utils/requests";
+import requests from "../utils/requests";
 import { Movie } from "@/typing";
 import Row from "@/components/Row";
 // import { getServerSideProps } from "next/dist/build/templates/pages";

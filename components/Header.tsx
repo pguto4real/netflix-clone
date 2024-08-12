@@ -1,18 +1,17 @@
-
-
-
-import { HiOutlineBell, HiOutlineSearch, HiOutlineSearchCircle } from "react-icons/hi";
+import {
+  HiOutlineBell,
+  HiOutlineSearch,
+  HiOutlineSearchCircle,
+} from "react-icons/hi";
 import { BellIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import Image from "next/image";
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-
     const handleScroll = () => {
-       
       if (window.scrollY > 0) {
         setIsScrolled(true);
       } else {
@@ -25,11 +24,11 @@ export default function Header() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  },[]);
+  }, []);
   return (
-    <header className={`${isScrolled && 'bg-[#141414]'}`}>
+    <header className={`${isScrolled && "bg-[#141414]"}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
-        <img
+        <Image
           src="https://rb.gy/ulxxee"
           alt=""
           width={100}
