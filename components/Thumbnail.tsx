@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Movie } from '../typing'
 
 interface Props {
-  movie: Movie | DocumentData
+  movie: Movie
 }
 
 function Thumbnail({ movie }: Props) {
