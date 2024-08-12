@@ -1,6 +1,6 @@
-import { DocumentData } from 'firebase/firestore'
+// import { DocumentData } from 'firebase/firestore'
 import Image from 'next/image'
-import { useRecoilState } from 'rec'
+// import { useRecoilState } from 'rec'
 // import { modalState, movieState } from '../atoms/modalAtom'
 import { Movie } from '../typing'
 
