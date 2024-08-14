@@ -9,18 +9,22 @@ import {
   VolumeUpIcon,
   XIcon,
 } from "@heroicons/react/solid";
-import { Genre } from "@/typing";
+import { Genre, Movie } from "@/typing";
 import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
 import { ThumbUpIcon } from "@heroicons/react/outline";
+import Thumbnail from "./Thumbnail";
+import { imageBaseUrl } from "@/constant/movie";
+import Related from "./Related";
 
 export default function Modal() {
   const [showModal, setShowModal] = useRecoilState(modalState);
   const [movie, setMovie] = useRecoilState(movieState);
   const [trailer, setTrailer] = useState("");
-  const [runtime, setRuntime] = useState('');
+  const [runtime, setRuntime] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
+  const [relatedMovies, setRelatedMovies] = useState([]);
   const handleClose = () => {
     setShowModal(false);
   };
@@ -38,7 +42,7 @@ export default function Modal() {
       )
         .then((response) => response.json())
         .catch((err) => console.log(err.message));
-      console.log(data);
+
       if (data?.videos) {
         const index = data.videos.results.findIndex(
           (element: Element) => element.type === "Trailer"
@@ -49,31 +53,59 @@ export default function Modal() {
         setGenres(data.genres);
       }
       if (data?.runtime) {
-        let newRuntime = ''
-        if(data?.runtime >60){
-            newRuntime+=Math.floor(data?.runtime/60)+"h "
+        let newRuntime = "";
+        if (data?.runtime > 60) {
+          newRuntime += Math.floor(data?.runtime / 60) + "h ";
         }
-        console.log(50%60)
-        if(data.runtime%60 < 60)
-        {
-            newRuntime+= data.runtime%60+"m"
+
+        if (data.runtime % 60 < 60) {
+          newRuntime += (data.runtime % 60) + "m";
         }
-            
+
         // {runtime > 60 && Math.floor(runtime/60)+"h "+Math.floor(runtime%60) }
         setRuntime(newRuntime);
       }
     }
+    function shuffle(dataArray: []) {
+      //   set the index to the arrays length
+      let i = dataArray.length,
+        j,
+        temp;
+      //   create a loop that subtracts everytime it iterates through
+      while (--i > 0) {
+        //  create a random number and store it in a variable
+        j = Math.floor(Math.random() * (i + 1));
+        // create a temporary position from the item of the random number
+        temp = dataArray[j];
+        // swap the temp with the position of the last item in the dataArray
+        dataArray[j] = dataArray[i];
+        // swap the last item with the position of the random number
+        dataArray[i] = temp;
+      }
+      // return[execute] the dataArray when it completes::don't really need the console.log but helps to check
+      return dataArray;
+    }
+    async function fetchRelatedMovie() {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movie?.id}/similar?api_key=${process.env.NEXT_PUBLIC_API_KEY}`
+      )
+        .then((response) => response.json())
+        .catch((err) => console.log(err.message));
+
+      setRelatedMovies(shuffle(data.results).slice(0, 8));
+    }
 
     fetchMovie();
+    fetchRelatedMovie();
   }, [movie]);
 
-  console.log(movie?.runtime);
+  console.log(relatedMovies.sort(() => 0.5 * Math.random()));
   return (
     <MuiModal
       open={showModal}
       onClose={handleClose}
       className="fixex !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl
-    overflow-hidden overflow-y-scroll rounded-md scrollbar-hide"
+   overflow-y-scroll rounded-md scrollbar-hide"
     >
       <>
         {" "}
@@ -143,8 +175,8 @@ export default function Modal() {
             <div className="flex flex-col gap-x-10 gap-y-4 font-light md:flex-row">
               <div className="flex flex-col space-y-3 text-sm">
                 <div>
-                  <span  className=" text-[gray]">Genres: </span>
-                     {genres.map((genre) => genre.name).join(", ")}
+                  <span className=" text-[gray]">Genres: </span>
+                  {genres.map((genre) => genre.name).join(", ")}
                 </div>
               </div>
 
@@ -152,10 +184,24 @@ export default function Modal() {
               <div>
                 <span className="text-[gray]">Original Language: </span>
                 {movie?.original_language}
+              </div>
+              <div>
+                <span className="text-[gray]">Total Votes: </span>
+                {movie?.vote_count}
+              </div>
             </div>
-            <div ><span className="text-[gray]">Total Votes: </span>{movie?.vote_count}</div>
+            <div>
+              <h1 className="text-2xl font-extrabold px-2 py-2">More Like This</h1>
+             
+              <div className="flex flex-wrap justify-center lg:justify-normal">
+                
+                 {
+                relatedMovies.map((relatedMovie)=>(
+                    <Related key={relatedMovie?.id} movie={relatedMovie} />
+                ))
+            }
+              </div>
             </div>
-           
           </div>
         </div>
       </>
