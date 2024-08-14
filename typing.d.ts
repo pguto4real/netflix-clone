@@ -11,6 +11,7 @@ export interface Genre {
     first_air_date: string
     genre_ids: number[]
     id: number
+    runtime:number
     name: string
     origin_country: string[]
     original_language: string

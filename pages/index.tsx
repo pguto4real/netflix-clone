@@ -5,6 +5,9 @@ import requests from "../utils/requests";
 import { Movie } from "@/typing";
 import Row from "@/components/Row";
 import useAuth from "@/hooks/useAuth";
+import Modal from "@/components/Modal";
+import { useRecoilValue } from "recoil";
+import { modalState } from "@/atoms/modalAtoms";
 // import { getServerSideProps } from "next/dist/build/templates/pages";
 
 interface Props {
@@ -31,9 +34,11 @@ const Home = ({
 }: Props) => {
   const { logout ,loading} = useAuth();
 
+  const showModal = useRecoilValue(modalState)
+
   if(loading) return <div className=" bg-black/75">Loading</div>
   return (
-    <div className="relative h-screen bg-gradient-to-blg:h-[140vh]" >
+    <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]" >
       <Head>
         <title>Home - Netflix</title>
       </Head>
@@ -52,7 +57,7 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-    
+    {showModal && <Modal/>}
     </div>
   );
 };

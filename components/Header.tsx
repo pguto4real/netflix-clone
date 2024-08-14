@@ -12,7 +12,7 @@ export default function Header({logout}) {
 
   useEffect(() => {
 
-    console.log(isScrolled)
+  
     const handleScroll = () => {
       if (window.scrollY > 0) {
         setIsScrolled(true);
