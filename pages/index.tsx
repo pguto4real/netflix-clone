@@ -4,6 +4,7 @@ import Banner from "@/components/Banner";
 import requests from "../utils/requests";
 import { Movie } from "@/typing";
 import Row from "@/components/Row";
+import useAuth from "@/hooks/useAuth";
 // import { getServerSideProps } from "next/dist/build/templates/pages";
 
 interface Props {
@@ -28,19 +29,19 @@ const Home = ({
   topRated,
   trendingNow,
 }: Props) => {
+  const { logout ,loading} = useAuth();
+
+  if(loading) return <div className=" bg-black/75">Loading</div>
   return (
-    <div
-      className="relative h-screen bg-gradient-to-blg:h-[140vh] 
-    "
-    >
+    <div className="relative h-screen bg-gradient-to-blg:h-[140vh]" >
       <Head>
         <title>Home - Netflix</title>
       </Head>
-      <Header />
+      <Header logout={logout}/>
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
-        <Row title="Trending Now" movies={trendingNow} />
+          <Row title="Trending Now" movies={trendingNow} />
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
           {/* My List Component */}
@@ -51,7 +52,7 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-      {/* Modal */}
+    
     </div>
   );
 };

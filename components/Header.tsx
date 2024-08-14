@@ -1,16 +1,18 @@
 import {
   HiOutlineBell,
-  HiOutlineSearch,
   HiOutlineSearchCircle,
 } from "react-icons/hi";
-import { BellIcon } from "@heroicons/react/solid";
-import Link from "next/link";
+
 import { useEffect, useState } from "react";
-import Image from "next/image";
-export default function Header() {
+import useAuth from "@/hooks/useAuth";
+
+export default function Header({logout}) {
   const [isScrolled, setIsScrolled] = useState(false);
 
+
   useEffect(() => {
+
+    console.log(isScrolled)
     const handleScroll = () => {
       if (window.scrollY > 0) {
         setIsScrolled(true);
@@ -25,8 +27,10 @@ export default function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  
   return (
-    <header className={`${isScrolled && "bg-[#141414]"}`}>
+    <>
+      <header className={`${isScrolled && "bg-[#141414]"}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
         <img
           src="https://rb.gy/ulxxee"
@@ -50,10 +54,12 @@ export default function Header() {
         <HiOutlineSearchCircle className="hidden h-6 w-6 sm:inline" />
         <p className="hidden lg:inline">Kids</p>
         <HiOutlineBell className="h-6 w-6" />
-        <Link href="/account">
-          <img src="https://rb.gy/g1pwyx" alt="" />
-        </Link>
+        {/* <Link href="/account"> */}
+        <img src="https://rb.gy/g1pwyx" className="cursor-pointer" alt="" onClick={logout}/>
+        {/* </Link> */}
       </div>
     </header>
+    </>
+  
   );
 }
