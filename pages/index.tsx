@@ -17,10 +17,11 @@ import useAuth from "../hooks/useAuth";
 import payments from "../lib/stripe";
 import { Movie } from "../typing";
 import requests from "../utils/requests";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   collection,
   collectionGroup,
+  doc,
   getDoc,
   getDocs,
   query,
@@ -51,30 +52,7 @@ const Home = ({
   products,
 }: Props) => {
   const { logout, loading } = useAuth();
-  useEffect(() => {
-    const getProducts = async () => {
-      const productdatas = await getDocs(collection(db, "products"));
-      const post = productdatas.docs.map((item) => ({
-        ...item.data(),
-        id: item.id,
-      }));
-      const products = productdatas.docs.map(async function (productdata) {
-        // console.log(doc.id, " => ", doc.data(), "=>", doc.ref);
-        // console.log(productdata.data());
-        const priceSnaps = await getDocs(collection(productdata.ref, "prices"));
-        const snaps = priceSnaps.docs.map((priceSnap) => priceSnap.data());
-        // console.log(snaps);
 
-        return {...productdata.data(),prices:snaps}
-      });
-
-      return products;
-    };
-    getProducts().then(res=>console.log(res))
- 
-  });
-
-console.log(products)
   const showModal = useRecoilValue(modalState);
   const subscription = false;
 
@@ -113,21 +91,32 @@ console.log(products)
 export default Home;
 
 export const getServerSideProps = async () => {
-  console.log("Starting getServerSideProps");
-
-  const products = await getProducts(payments, {
-    includePrices: true,
-    activeOnly: true,
-  })
-  .then((res) => {
-    console.log("Products fetched successfully:", res);
-    return res;
-  })
-  .catch((error) => {
-    console.error("Error fetching products:", error.message);
-    return null;
+  const productdatas = (await getDocs(collection(db, "products"))).docs;
+  let products=[];
+  let i = 0
+  let productsId = []
+  productdatas.forEach((doc) => {
+    // productdatas.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+    productsId[i] = {id:doc.id,data:doc.data()}
+    i++
   });
 
+  for (let index = 0; index < productsId.length; index++) {
+   console.log(productsId[index])
+    const postRef = collection(db, 'products', productsId[index].id, 'prices');
+    const q = query(postRef);
+    const pricesQuerySnap = await getDocs(q);
+    const post = pricesQuerySnap.docs.map((item) => ({ ...productsId[index].data,id:productsId[index].id, prices:item.data() }));
+    console.log(pricesQuerySnap)
+    console.log(post)
+    products.push(post[0])
+
+  }
+  // const post = data.map((item) => item.);
+  console.log(products)
+
+console.log(products[0])
   console.log("Products after fetch:", products);
   const [
     netflixOriginals,
