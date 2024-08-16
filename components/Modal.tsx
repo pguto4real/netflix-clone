@@ -104,8 +104,8 @@ export default function Modal() {
     <MuiModal
       open={showModal}
       onClose={handleClose}
-      className="fixex !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl
-   overflow-y-scroll rounded-md scrollbar-hide"
+      className="fixex !top-7 left-0 right-0 z-50 mx-auto w-[65%] md:w-[80%] max-w-5xl
+   overflow-y-scroll rounded-md scrollbar-hide lg:w-full"
     >
       <>
         {" "}
@@ -191,7 +191,8 @@ export default function Modal() {
               </div>
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold px-2 py-2">More Like This</h1>
+              <h1 className="text-2xl font-extrabold px-2 py-2 text-center
+              md:text-center lg:text-left ">More Like This</h1>
              
               <div className="flex flex-wrap justify-center lg:justify-normal">
                 

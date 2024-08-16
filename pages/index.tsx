@@ -1,14 +1,31 @@
+import {
+  getProduct,
+  getProducts,
+  Product,
+} from "@stripe/firestore-stripe-payments";
 import Head from "next/head";
-import Header from "../components/Header";
-import Banner from "@/components/Banner";
-import requests from "../utils/requests";
-import { Movie } from "@/typing";
-import Row from "@/components/Row";
-import useAuth from "@/hooks/useAuth";
-import Modal from "@/components/Modal";
 import { useRecoilValue } from "recoil";
-import { modalState } from "@/atoms/modalAtoms";
-// import { getServerSideProps } from "next/dist/build/templates/pages";
+import { modalState, movieState } from "../atoms/modalAtoms";
+import Banner from "../components/Banner";
+import Header from "../components/Header";
+import Modal from "../components/Modal";
+import Plans from "../components/Plans";
+import Row from "../components/Row";
+import useAuth from "../hooks/useAuth";
+// import useList from '../hooks/useLis'
+// import useSubscription from '../hooks/useSubscription'
+import payments from "../lib/stripe";
+import { Movie } from "../typing";
+import requests from "../utils/requests";
+import { useEffect } from "react";
+import {
+  collection,
+  collectionGroup,
+  getDoc,
+  getDocs,
+  query,
+} from "firebase/firestore";
+import { db } from "@/firebase";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -19,7 +36,7 @@ interface Props {
   horrorMovies: Movie[];
   romanceMovies: Movie[];
   documentaries: Movie[];
-  // products: Product[]
+  products: Product[];
 }
 
 const Home = ({
@@ -31,18 +48,50 @@ const Home = ({
   romanceMovies,
   topRated,
   trendingNow,
+  products,
 }: Props) => {
-  const { logout ,loading} = useAuth();
+  const { logout, loading } = useAuth();
+  useEffect(() => {
+    const getProducts = async () => {
+      const productdatas = await getDocs(collection(db, "products"));
+      const post = productdatas.docs.map((item) => ({
+        ...item.data(),
+        id: item.id,
+      }));
+      const products = productdatas.docs.map(async function (productdata) {
+        // console.log(doc.id, " => ", doc.data(), "=>", doc.ref);
+        // console.log(productdata.data());
+        const priceSnaps = await getDocs(collection(productdata.ref, "prices"));
+        const snaps = priceSnaps.docs.map((priceSnap) => priceSnap.data());
+        // console.log(snaps);
 
-  const showModal = useRecoilValue(modalState)
+        return {...productdata.data(),prices:snaps}
+      });
 
-  if(loading) return <div className=" bg-black/75">Loading</div>
+      return products;
+    };
+    getProducts().then(res=>console.log(res))
+ 
+  });
+
+console.log(products)
+  const showModal = useRecoilValue(modalState);
+  const subscription = false;
+
+  if (loading || subscription === null)
+    return <div className=" bg-black/75">Loading</div>;
+
+  if (!subscription) return <Plans products={products} />;
   return (
-    <div className={`relative h-screen bg-gradient-to-b lg:h-[140vh] ${showModal && "!h-screen overflow-hidden"}`} >
+    <div
+      className={`relative h-screen bg-gradient-to-b lg:h-[140vh] ${
+        showModal && "!h-screen overflow-hidden"
+      }`}
+    >
       <Head>
         <title>Home - Netflix</title>
       </Head>
-      <Header logout={logout}/>
+      <Header logout={logout} />
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
@@ -57,20 +106,29 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-    {showModal && <Modal/>}
+      {showModal && <Modal />}
     </div>
   );
 };
 export default Home;
 
 export const getServerSideProps = async () => {
-  // const products = await getProducts(payments, {
-  //   includePrices: true,
-  //   activeOnly: true,
-  // })
-  //   .then((res) => res)
-  //   .catch((error) => console.log(error.message))
+  console.log("Starting getServerSideProps");
 
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+  .then((res) => {
+    console.log("Products fetched successfully:", res);
+    return res;
+  })
+  .catch((error) => {
+    console.error("Error fetching products:", error.message);
+    return null;
+  });
+
+  console.log("Products after fetch:", products);
   const [
     netflixOriginals,
     trendingNow,
@@ -90,7 +148,7 @@ export const getServerSideProps = async () => {
     fetch(requests.fetchRomanceMovies).then((res) => res.json()),
     fetch(requests.fetchDocumentaries).then((res) => res.json()),
   ]);
-
+  // consolelog;
   return {
     props: {
       netflixOriginals: netflixOriginals.results,
@@ -101,7 +159,7 @@ export const getServerSideProps = async () => {
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
       documentaries: documentaries.results,
-      // products,
+      products:products||null,
     },
   };
 };

@@ -5,13 +5,16 @@ import Image from "next/image";
 import React from "react";
 import { useRecoilState } from "recoil";
 
-export default function Related({ movie }) {
+export default function Related({ movie }:any) {
+
+  console.log( movie)
+  console.log( movie?.first_air_date)
     const [showModal, setShowModal] = useRecoilState(modalState)
     const [currentMovie, setCurrentMovie] = useRecoilState(movieState)
   return (
     <>  
       <div
-      className="border-2 w-[50%] my-2 md:w-[33%] lg:w-[23%]  bg-[#2f2f2f] mx-2"
+      className="border-2 w-[50%] my-2 md:w-[30%] lg:w-[23%]  bg-[#2f2f2f] mx-2"
       onClick={() => {
         setCurrentMovie(movie);
         setShowModal(true);
@@ -37,7 +40,7 @@ export default function Related({ movie }) {
       <div className="flex justify-between px-4 py-4">
         <div className="flex justify-center items-center space-x-2">
           <p className=" text-[16px] font-semibold  text-[#bcbcbc]">
-            {movie?.release_date.split("-")[0] ||
+            {movie?.release_date ? movie?.release_date.split("-")[0] :
               movie?.first_air_date.split("-")[0]}
           </p>
 
