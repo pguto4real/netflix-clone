@@ -130,7 +130,7 @@ export default function Modal() {
         (snapshot) => setMovies(snapshot.docs)
       );
     }
-  }, [db, movie?.id]);
+  }, [db, movie?.id,user]);
   const checkIfInList = (id: any) => {
     return movies.findIndex((result) => result.data().id === id) !== -1;
   };
@@ -140,7 +140,7 @@ export default function Modal() {
       setAddedToList(
         movies.findIndex((result) => result.data().id === movie?.id) !== -1
       ),
-    [movies]
+    [movies, movie?.id]
   );
 
   const handleList = async () => {
