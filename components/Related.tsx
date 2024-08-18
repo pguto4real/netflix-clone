@@ -1,6 +1,6 @@
 import { modalState, movieState } from "@/atoms/modalAtoms";
 import Image from "next/image";
-import { release } from "os";
+
 import React from "react";
 import { useRecoilState } from "recoil";
 
@@ -22,7 +22,7 @@ export default function Related({
   {
     release_date = movie?.first_air_date?movie?.first_air_date.split("-")[0]:""
   }
-console.log(movie?.release_date)
+
   return (
     <>
       <div className="border-2 w-[50%] my-2 md:w-[30%] lg:w-[23%]  bg-[#2f2f2f] mx-2">

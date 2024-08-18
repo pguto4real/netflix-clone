@@ -1,24 +1,23 @@
-import { getProducts, Product } from '@stripe/firestore-stripe-payments'
-import { GetStaticProps } from 'next'
-import Head from 'next/head'
-import Link from 'next/link'
+import { getProducts, Product } from "@stripe/firestore-stripe-payments";
+import { GetStaticProps } from "next";
+import Head from "next/head";
+import Link from "next/link";
 // import Membership from '../components/Membership'
-import useAuth from '../hooks/useAuth'
-import useSubscription from '../hooks/useSubscription'
-import payments from '../lib/stripe'
-import { collection, doc, getDocs, query } from 'firebase/firestore'
-import { db } from '@/firebase'
-import Membership from '@/components/Membership'
+import useAuth from "../hooks/useAuth";
+import useSubscription from "../hooks/useSubscription";
+import payments from "../lib/stripe";
+import { collection, doc, getDocs, query } from "firebase/firestore";
+import { db } from "@/firebase";
+import Membership from "@/components/Membership";
+import Image from "next/image";
 
 interface Props {
-  products: Product[]
+  products: Product[];
 }
 
 function Account({ products }: Props) {
-
-  const { user, logout } = useAuth()
-  const subscription = useSubscription(user)
-
+  const { user, logout } = useAuth();
+  const subscription = useSubscription(user);
 
   return (
     <div>
@@ -29,19 +28,25 @@ function Account({ products }: Props) {
 
       <header className={`bg-[#141414]`}>
         <Link href="/">
-          <img
-            src="https://rb.gy/ulxxee"
+          <Image
+            src="/Netflix_2015_logo.svg"
+            className="cursor-pointer object-contain "
             width={120}
             height={120}
-            className="cursor-pointer object-contain"
+            alt=""
           />
+
+          
         </Link>
         <Link href="/account">
-          <img
+        <Image
             src="https://rb.gy/g1pwyx"
+            className="cursor-pointer rounded "
+            width={32}
+            height={32}
             alt=""
-            className="cursor-pointer rounded"
           />
+         
         </Link>
       </header>
 
@@ -49,7 +54,14 @@ function Account({ products }: Props) {
         <div className="flex flex-col gap-x-4 md:flex-row md:items-center">
           <h1 className="text-3xl md:text-4xl">Account</h1>
           <div className="-ml-0.5 flex items-center gap-x-1.5">
-            <img src="https://rb.gy/4vfk4r" alt="" className="h-7 w-7" />
+          <Image
+            src="membersince.svg"
+            className="cursor-pointer rounded "
+            width={28}
+            height={28}
+            alt=""
+          />
+        
             <p className="text-xs font-semibold text-[#555]">
               Member since {subscription?.created.toDate().toString()}
             </p>
@@ -84,39 +96,36 @@ function Account({ products }: Props) {
         </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default Account
+export default Account;
 
 export const getStaticProps: GetStaticProps = async () => {
-    const productdatas = (await getDocs(collection(db, "products"))).docs;
-    let products = [];
-    let i = 0;
-    let productsId = [];
-    productdatas.forEach((doc) => {
-      productsId[i] = { id: doc.id, data: doc.data() };
-      i++;
-    });
-  
-    for (let index = 0; index < productsId.length; index++) {
-     
-      const postRef = collection(db, "products", productsId[index].id, "prices");
-      const q = query(postRef);
-      const pricesQuerySnap = await getDocs(q);
-      const post = pricesQuerySnap.docs.map((item) => ({
-        ...productsId[index].data,
-        id: productsId[index].id,
-        priceId: item.id,
-        prices: item.data(),
-      }));
- 
-    }
-  
+  const productdatas = (await getDocs(collection(db, "products"))).docs;
+  let products = [];
+  let i = 0;
+  let productsId = [];
+  productdatas.forEach((doc) => {
+    productsId[i] = { id: doc.id, data: doc.data() };
+    i++;
+  });
+
+  for (let index = 0; index < productsId.length; index++) {
+    const postRef = collection(db, "products", productsId[index].id, "prices");
+    const q = query(postRef);
+    const pricesQuerySnap = await getDocs(q);
+    const post = pricesQuerySnap.docs.map((item) => ({
+      ...productsId[index].data,
+      id: productsId[index].id,
+      priceId: item.id,
+      prices: item.data(),
+    }));
+  }
 
   return {
     props: {
       products,
     },
-  }
-}
+  };
+};
