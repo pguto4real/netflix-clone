@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
+import BasicMenu from "./BasicMenu";
 
 export default function Header({logout}) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -40,7 +41,7 @@ export default function Header({logout}) {
           height={100}
           className="cursor-pointer object-contain"
         />
-
+ <BasicMenu />
         <ul className="hidden space-x-4 md:flex">
           <li className="header__link">Home</li>
           <li className="header__link">Tv Shows</li>

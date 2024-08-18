@@ -1,4 +1,5 @@
 import {
+    getProducts,
     onCurrentUserSubscriptionUpdate,
     Subscription,
   } from '@stripe/firestore-stripe-payments'
@@ -25,7 +26,7 @@ import {  collection, onSnapshot, query, where } from 'firebase/firestore'
                         subscription.data().status === 'trialing'
           
           );
- 
+    
       if(subscriptions.length > 0){
         
         setSubscription(subscriptions[0].data())

@@ -8,17 +8,17 @@ import useSubscription from '../hooks/useSubscription'
 import payments from '../lib/stripe'
 import { collection, doc, getDocs, query } from 'firebase/firestore'
 import { db } from '@/firebase'
+import Membership from '@/components/Membership'
 
 interface Props {
   products: Product[]
 }
 
 function Account({ products }: Props) {
-  console.log(products)
+
   const { user, logout } = useAuth()
   const subscription = useSubscription(user)
-  console.log(subscription)
-  console.log(subscription?.created)
+
 
   return (
     <div>
@@ -56,15 +56,15 @@ function Account({ products }: Props) {
           </div>
         </div>
 
-        {/* <Membership /> */}
+        <Membership />
 
         <div className="mt-6 grid grid-cols-1 gap-x-4 border px-4 py-4 md:grid-cols-4 md:border-x-0 md:border-t md:border-b-0 md:px-0 md:pb-0">
           <h4 className="text-lg text-[gray]">Plan Details</h4>
           {/* Find the current plan */}
-          <div className="col-span-2 font-medium">fgfg
+          <div className="col-span-2 font-medium capitalize">
             {
               products.filter(
-                (product) => product.id === subscription?.product
+                (product) => product.id === subscription?.product.id
               )[0]?.name
             }
           </div>
