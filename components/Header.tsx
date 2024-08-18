@@ -5,6 +5,7 @@ import {
 
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function Header({logout}) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,9 +55,9 @@ export default function Header({logout}) {
         <HiOutlineSearchCircle className="hidden h-6 w-6 sm:inline" />
         <p className="hidden lg:inline">Kids</p>
         <HiOutlineBell className="h-6 w-6" />
-        {/* <Link href="/account"> */}
-        <img src="https://rb.gy/g1pwyx" className="cursor-pointer" alt="" onClick={logout}/>
-        {/* </Link> */}
+        <Link href="/account">
+        <img src="https://rb.gy/g1pwyx" className="cursor-pointer" alt=""/>
+        </Link>
       </div>
     </header>
     </>

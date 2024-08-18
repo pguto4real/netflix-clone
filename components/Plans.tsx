@@ -7,6 +7,7 @@ import PlanLi from "./PlanLi";
 import { Product } from "@stripe/firestore-stripe-payments";
 import Table from "./Table";
 import { loadCheckout } from "@/lib/stripe";
+import Loader from "./Loader";
 
 
 interface Props {
@@ -18,11 +19,12 @@ export default function Plans({ products }: Props) {
 
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2])
   const [isBillingLoading, setBillingLoading] = useState(false)
-
+console.log(user)
   const subscribeToPlan = () => {
+    console.log(selectedPlan)
     if (!user) return
 
-    loadCheckout(selectedPlan?.prices[0].id!)
+    loadCheckout(selectedPlan?.priceId!,user.uid)
     setBillingLoading(true)
   }
   console.log(selectedPlan)

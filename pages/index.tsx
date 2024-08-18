@@ -27,6 +27,7 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import useSubscription from "@/hooks/useSubscription";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -51,13 +52,13 @@ const Home = ({
   trendingNow,
   products,
 }: Props) => {
-  const { logout, loading } = useAuth();
+  const { logout, loading, user } = useAuth();
 
   const showModal = useRecoilValue(modalState);
-  const subscription = false;
-
-  if (loading || subscription === null)
-    return <div className=" bg-black/75">Loading</div>;
+  const subscription = useSubscription(user);
+  console.log(subscription);
+  console.log(loading);
+  if (loading) return <div className=" bg-black/75">Loading</div>;
 
   if (!subscription) return <Plans products={products} />;
   return (
@@ -92,32 +93,31 @@ export default Home;
 
 export const getServerSideProps = async () => {
   const productdatas = (await getDocs(collection(db, "products"))).docs;
-  let products=[];
-  let i = 0
-  let productsId = []
+  let products = [];
+  let i = 0;
+  let productsId = [];
   productdatas.forEach((doc) => {
-    // productdatas.data() is never undefined for query doc snapshots
     console.log(doc.id, " => ", doc.data());
-    productsId[i] = {id:doc.id,data:doc.data()}
-    i++
+    productsId[i] = { id: doc.id, data: doc.data() };
+    i++;
   });
 
   for (let index = 0; index < productsId.length; index++) {
-   console.log(productsId[index])
-    const postRef = collection(db, 'products', productsId[index].id, 'prices');
+    console.log(productsId[index]);
+    const postRef = collection(db, "products", productsId[index].id, "prices");
     const q = query(postRef);
     const pricesQuerySnap = await getDocs(q);
-    const post = pricesQuerySnap.docs.map((item) => ({ ...productsId[index].data,id:productsId[index].id, prices:item.data() }));
-    console.log(pricesQuerySnap)
-    console.log(post)
-    products.push(post[0])
-
+    const post = pricesQuerySnap.docs.map((item) => ({
+      ...productsId[index].data,
+      id: productsId[index].id,
+      priceId: item.id,
+      prices: item.data(),
+    }));
+    console.log(pricesQuerySnap);
+    console.log(post);
+    products.push(post[0]);
   }
-  // const post = data.map((item) => item.);
-  console.log(products)
 
-console.log(products[0])
-  console.log("Products after fetch:", products);
   const [
     netflixOriginals,
     trendingNow,
@@ -148,7 +148,7 @@ console.log(products[0])
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
       documentaries: documentaries.results,
-      products:products||null,
+      products: products || null,
     },
   };
 };
