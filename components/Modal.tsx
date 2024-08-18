@@ -130,7 +130,7 @@ export default function Modal() {
         (snapshot) => setMovies(snapshot.docs)
       );
     }
-  }, [db, movie?.id,user]);
+  }, [movie?.id,user]);
   const checkIfInList = (id: any) => {
     return movies.findIndex((result) => result.data().id === id) !== -1;
   };

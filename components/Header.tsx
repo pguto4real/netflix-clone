@@ -4,12 +4,12 @@ import {
 } from "react-icons/hi";
 
 import { useEffect, useState } from "react";
-import useAuth from "@/hooks/useAuth";
+
 import Link from "next/link";
 import BasicMenu from "./BasicMenu";
 import Image from "next/image";
 
-export default function Header({logout}) {
+export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
 

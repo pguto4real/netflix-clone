@@ -70,7 +70,7 @@ const Home = ({
       <Head>
         <title>Home - Netflix</title>
       </Head>
-      <Header logout={logout} />
+      <Header /> 
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
