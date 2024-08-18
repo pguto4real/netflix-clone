@@ -20,13 +20,13 @@ import { addDoc, collection, onSnapshot } from 'firebase/firestore'
         success_url: window.location.origin,
         cancel_url: window.location.origin,
       });
-console.log(docRef)
+
 
 
       // Wait for the CheckoutSession to get attached by the extension
       onSnapshot(docRef, (snap) => {
 
-        console.log(snap.data())
+     
         const { error, url } = snap.data();
         if (error) {
           alert(`An error occurred: ${error.message}`);
@@ -41,17 +41,6 @@ console.log(docRef)
       alert("An error occurred while creating the checkout session.");
     }
   }
-  // const loadCheckout = async (priceId: string) => {
-
-  //   console.log(priceId)
-  //   await createCheckoutSession(payments, {
-  //     price: priceId,
-  //     success_url: window.location.origin,
-  //     cancel_url: window.location.origin,
-  //   })
-  //     .then((snapshot) => window.location.assign(snapshot.url))
-  //     .catch((error) => console.log(error.message))
-  // }
   
   const goToBillingPortal = async () => {
     const instance = getFunctions(app, 'us-central1')

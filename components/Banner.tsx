@@ -29,10 +29,10 @@ export default function Banner({ netflixOriginals }: Props) {
       <div className="absolute top-0 left-0 h-[95vh] w-screen -z-10">
         {
           <Image
-            className="w-[100%]"
+            className="w-[100%] object-cover"
             src={`${imageBaseUrl}${movie?.backdrop_path || movie?.poster_path}`}
-            layout="fill"
-            objectFit="cover"
+            fill 
+            sizes=""
             alt=""
           />
         }

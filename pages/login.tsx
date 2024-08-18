@@ -13,7 +13,7 @@ interface Inputs {
 export default function Login() {
   const [login, setLogin] = useState(false);
 
-  const {signIn,signUp} = useAuth()
+  const { signIn, signUp } = useAuth();
 
   const {
     register,
@@ -21,11 +21,11 @@ export default function Login() {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async ({email,password}) => {
+  const onSubmit: SubmitHandler<Inputs> = async ({ email, password }) => {
     if (login) {
-      await signIn(email,password)
+      await signIn(email, password);
     } else {
-      await signUp(email,password)
+      await signUp(email, password);
     }
   };
 
@@ -40,11 +40,11 @@ export default function Login() {
       </Head>
 
       <Image
-        className="-z-10 !hidden opacity-60 sm:!inline"
+        className="-z-10 !hidden opacity-60 sm:!inline object-cover"
         src="https://rb.gy/p2hphi"
         alt=""
-        layout="fill"
-        objectFit="cover"
+        fill
+        sizes=""
       />
 
       <img

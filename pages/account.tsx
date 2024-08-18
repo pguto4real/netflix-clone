@@ -95,13 +95,12 @@ export const getStaticProps: GetStaticProps = async () => {
     let i = 0;
     let productsId = [];
     productdatas.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
       productsId[i] = { id: doc.id, data: doc.data() };
       i++;
     });
   
     for (let index = 0; index < productsId.length; index++) {
-      console.log(productsId[index]);
+     
       const postRef = collection(db, "products", productsId[index].id, "prices");
       const q = query(postRef);
       const pricesQuerySnap = await getDocs(q);
@@ -111,9 +110,7 @@ export const getStaticProps: GetStaticProps = async () => {
         priceId: item.id,
         prices: item.data(),
       }));
-      console.log(pricesQuerySnap);
-      console.log(post);
-      products.push(post[0]);
+ 
     }
   
 

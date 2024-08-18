@@ -70,8 +70,6 @@ export function AuthProvider({ children }: AuthProvderProps) {
     setLoading(false);
     await createUserWithEmailAndPassword(auth, email, password)
       .then(({ user }) => {
-        console.log(user);
-        setUser(user);
         router.push("/");
         setLoading(false);
       })
@@ -83,7 +81,7 @@ export function AuthProvider({ children }: AuthProvderProps) {
     setLoading(false);
     await signInWithEmailAndPassword(auth, email, password)
       .then(({ user }) => {
-        console.log(user);
+      
         setUser(user);
         router.push("/");
         setLoading(false);
@@ -94,7 +92,7 @@ export function AuthProvider({ children }: AuthProvderProps) {
 
   const logout = async () => {
 
-    console.log(123)
+
     setLoading(true);
 
     signOut(auth)

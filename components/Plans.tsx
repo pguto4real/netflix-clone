@@ -19,15 +19,15 @@ export default function Plans({ products }: Props) {
 
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2])
   const [isBillingLoading, setBillingLoading] = useState(false)
-console.log(user)
+
   const subscribeToPlan = () => {
-    console.log(selectedPlan)
+
     if (!user) return
 
     loadCheckout(selectedPlan?.priceId!,user.uid)
     setBillingLoading(true)
   }
-  console.log(selectedPlan)
+
   return (
     <div>
       {" "}

@@ -1,21 +1,28 @@
 import { modalState, movieState } from "@/atoms/modalAtoms";
-import { imageBaseUrl } from "@/constant/movie";
-import { CheckIcon, PlusIcon } from "@heroicons/react/solid";
 import Image from "next/image";
+import { release } from "os";
 import React from "react";
 import { useRecoilState } from "recoil";
 
 export default function Related({
   movie,
-  addedToList,
-  handleList,
   checkIfInList,
   relatedMovieId,
 }: any) {
   const [showModal, setShowModal] = useRecoilState(modalState);
   const [currentMovie, setCurrentMovie] = useRecoilState(movieState);
   const inList = checkIfInList(relatedMovieId);
-  // console.log(inList)
+
+  let release_date = ""
+ 
+  if(movie?.release_date){
+    release_date = movie?.release_date?movie?.release_date.split("-")[0]:""
+  }
+  else
+  {
+    release_date = movie?.first_air_date?movie?.first_air_date.split("-")[0]:""
+  }
+console.log(movie?.release_date)
   return (
     <>
       <div className="border-2 w-[50%] my-2 md:w-[30%] lg:w-[23%]  bg-[#2f2f2f] mx-2">
@@ -33,7 +40,9 @@ export default function Related({
               movie.backdrop_path || movie.poster_path
             }`}
             alt=""
-            layout="fill"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          
           />
         </div>
         {/* <div>{movie</div> */}
@@ -46,9 +55,7 @@ export default function Related({
             }}
           >
             <p className=" text-[16px] font-semibold  text-[#bcbcbc]">
-              {movie?.release_date
-                ? movie?.release_date.split("-")[0]
-                : movie?.first_air_date.split("-")[0]}
+              {release_date}
             </p>
 
             <div

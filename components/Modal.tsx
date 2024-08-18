@@ -14,11 +14,17 @@ import { Genre, Movie } from "@/typing";
 import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
 import { ThumbUpIcon } from "@heroicons/react/outline";
-import Thumbnail from "./Thumbnail";
-import { imageBaseUrl } from "@/constant/movie";
+
 import Related from "./Related";
 import { db } from "@/firebase";
-import { collection, deleteDoc, doc, DocumentData, onSnapshot, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 import useAuth from "@/hooks/useAuth";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -30,19 +36,19 @@ export default function Modal() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
   const [relatedMovies, setRelatedMovies] = useState([]);
-  const { user } = useAuth()
-  const [addedToList, setAddedToList] = useState(false)
-  const [movies, setMovies] = useState<DocumentData[] | Movie[]>([])
+  const { user } = useAuth();
+  const [addedToList, setAddedToList] = useState(false);
+  const [movies, setMovies] = useState<DocumentData[] | Movie[]>([]);
 
   const toastStyle = {
-    background: 'white',
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    padding: '15px',
-    borderRadius: '9999px',
-    maxWidth: '1000px',
-  }
+    background: "white",
+    color: "black",
+    fontWeight: "bold",
+    fontSize: "16px",
+    padding: "15px",
+    borderRadius: "9999px",
+    maxWidth: "1000px",
+  };
   const handleClose = () => {
     setShowModal(false);
   };
@@ -116,60 +122,55 @@ export default function Modal() {
     fetchMovie();
     fetchRelatedMovie();
   }, [movie]);
-// Find all the movies in the user's list
-useEffect(() => {
-  if (user) {
-    return onSnapshot(
-      collection(db, 'customers', user.uid, 'myList'),
-      (snapshot) => setMovies(snapshot.docs)
-    )
-  }
-}, [db, movie?.id])
-const checkIfInList = (id:any) =>{
-  console.log(id)
-  
-  return movies.findIndex((result) => result.data().id === id) !== -1
-}
-// Check if the movie is already in the user's list
-useEffect(
-  () =>
-    setAddedToList(
-      movies.findIndex((result) => result.data().id === movie?.id) !== -1
-    ),
-  [movies]
-)
+  // Find all the movies in the user's list
+  useEffect(() => {
+    if (user) {
+      return onSnapshot(
+        collection(db, "customers", user.uid, "myList"),
+        (snapshot) => setMovies(snapshot.docs)
+      );
+    }
+  }, [db, movie?.id]);
+  const checkIfInList = (id: any) => {
+    return movies.findIndex((result) => result.data().id === id) !== -1;
+  };
+  // Check if the movie is already in the user's list
+  useEffect(
+    () =>
+      setAddedToList(
+        movies.findIndex((result) => result.data().id === movie?.id) !== -1
+      ),
+    [movies]
+  );
 
-const handleList = async () => {
-  if (addedToList) {
-  
-    await deleteDoc(
-      doc(db, 'customers', user!.uid, 'myList', movie?.id.toString()!)
-    )
+  const handleList = async () => {
+    if (addedToList) {
+      await deleteDoc(
+        doc(db, "customers", user!.uid, "myList", movie?.id.toString()!)
+      );
 
-    toast(
-      `${movie?.title || movie?.original_name} has been removed from My List`,
-      {
-        duration: 8000,
-        style: toastStyle,
-      }
-    )
-  } else {
+      toast(
+        `${movie?.title || movie?.original_name} has been removed from My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
+    } else {
+      await setDoc(
+        doc(db, "customers", user!.uid, "myList", movie?.id.toString()!),
+        { ...movie }
+      );
 
-    await setDoc(
-      doc(db, 'customers', user!.uid, 'myList', movie?.id.toString()!),
-      { ...movie }
-    )
-
-    toast(
-      `${movie?.title || movie?.original_name} has been added to My List`,
-      {
-        duration: 8000,
-        style: toastStyle,
-      }
-    )
-  }
-}
-
+      toast(
+        `${movie?.title || movie?.original_name} has been added to My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
+    }
+  };
 
   return (
     <MuiModal
@@ -197,12 +198,14 @@ const handleList = async () => {
             playing
             muted={muted}
           />
-          <div className="border-[3px] absolute bottom-[8rem] text-[40px] capitalize 
-          bg-black mx-8 p-2 rounded-[0.5rem] font-bold">{movie?.original_name || movie?.name || movie?.title || ""}</div>
+          <div
+            className="border-[3px] absolute bottom-[8rem] text-[40px] capitalize 
+          bg-black mx-8 p-2 rounded-[0.5rem] font-bold"
+          >
+            {movie?.original_name || movie?.name || movie?.title || ""}
+          </div>
           <div className="absolute bottom-10 flex w-full items-center justify-between px-10">
-          
             <div className="flex space-x-2">
-              
               <button
                 className="flex items-center gap-x-2 rounded bg-white px-8 text-xl
             font-bold text-black transition hover:bg-[#e6e6e6]"
@@ -212,7 +215,7 @@ const handleList = async () => {
               </button>
 
               <button className="modalButton" onClick={handleList}>
-              {addedToList ? (
+                {addedToList ? (
                   <CheckIcon className="h-7 w-7" />
                 ) : (
                   <PlusIcon className="h-7 w-7" />
@@ -271,16 +274,24 @@ const handleList = async () => {
               </div>
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold px-2 py-2 text-center
-              md:text-center lg:text-left ">More Like This</h1>
-             
+              <h1
+                className="text-2xl font-extrabold px-2 py-2 text-center
+              md:text-center lg:text-left "
+              >
+                More Like This
+              </h1>
+
               <div className="flex flex-wrap justify-center lg:justify-normal">
-                
-                 {
-                relatedMovies.map((relatedMovie)=>(
-                    <Related key={relatedMovie?.id} relatedMovieId={relatedMovie?.id} checkIfInList={checkIfInList} movie={relatedMovie} addedToList={addedToList} handleList={handleList}/>
-                ))
-            }
+                {relatedMovies.map((relatedMovie) => (
+                  <Related
+                    key={relatedMovie?.id}
+                    relatedMovieId={relatedMovie?.id}
+                    checkIfInList={checkIfInList}
+                    movie={relatedMovie}
+                    addedToList={addedToList}
+                    handleList={handleList}
+                  />
+                ))}
               </div>
             </div>
           </div>

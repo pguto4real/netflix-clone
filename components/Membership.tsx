@@ -8,7 +8,7 @@ function Membership() {
   const { user } = useAuth()
   const subscription = useSubscription(user)
   const [isBillingLoading, setBillingLoading] = useState(false)
-console.log(subscription)
+
   const manageSubscription = () => {
     if (subscription) {
       setBillingLoading(true)
