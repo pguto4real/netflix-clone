@@ -114,8 +114,7 @@ export const getServerSideProps = async () => {
       priceId: item.id,
       prices: item.data(),
     }));
-    console.log(pricesQuerySnap);
-    console.log(post);
+  
     products.push(post[0]);
   }
 

@@ -72,7 +72,7 @@ export default function Modal() {
       if (data?.videos) {
        
         const index = data.videos.results.findIndex(
-          (element: Element) => element?.type === "Trailer"
+          (element: any) => element?.type === "Trailer"
         );
         setTrailer(data.videos?.results[index]?.key);
       }
@@ -247,7 +247,7 @@ export default function Modal() {
 
               <div className="flex justify-center items-center space-x-2">
                 <p className=" text-[16px] font-semibold  text-[#bcbcbc]">
-                  {movie?.release_date.split("-")[0] ||
+                  {movie?.release_date?.split("-")[0] ||
                     movie?.first_air_date.split("-")[0]}
                 </p>
                 <p className=" text-[16px] text-[#bcbcbc]">{runtime}</p>
