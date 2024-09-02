@@ -25,15 +25,25 @@ import { addDoc, collection, onSnapshot } from 'firebase/firestore'
 
       // Wait for the CheckoutSession to get attached by the extension
       onSnapshot(docRef, (snap) => {
-
-     
-        const { error, url } = snap.data();
-        if (error) {
-          alert(`An error occurred: ${error.message}`);
-        }
-        if (url) {
-          // Redirect to the Stripe Checkout URL
-          window.location.assign(url);
+        // Check if snap.data() is defined
+        const data = snap.data();
+      
+        if (data) {
+          // Destructure safely when data is available
+          const { error, url } = data;
+      
+          // Check for error and handle it
+          if (error) {
+            alert(`An error occurred: ${error.message}`);
+          }
+      
+          // Check for URL and handle redirection
+          if (url) {
+            // Redirect to the Stripe Checkout URL
+            window.location.assign(url);
+          }
+        } else {
+          console.log("No data available in the snapshot.");
         }
       });
     } catch (error) {

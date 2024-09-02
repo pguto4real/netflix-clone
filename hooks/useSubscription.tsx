@@ -10,7 +10,7 @@ import { db } from '@/firebase'
 import {  collection, onSnapshot, query, where } from 'firebase/firestore'
   
   function useSubscription(user: User | null) {
-    const [subscription, setSubscription] = useState<Subscription | null>(null)
+    const [subscription, setSubscription] = useState<any | null>(null)
   
     useEffect(() => {
         

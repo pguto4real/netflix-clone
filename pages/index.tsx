@@ -58,6 +58,7 @@ const Home = ({
   const showModal = useRecoilValue(modalState);
   const subscription = useSubscription(user);
   const list = useList(user?.uid);
+  console.log(typeof list)
   if (loading) return <div className=" bg-black/75">Loading</div>;
 
  
@@ -79,7 +80,7 @@ const Home = ({
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
           {/* My List Component */}
-          {list.length > 0 && <Row title="My List" movies={list} />}
+          {list && list.length > 0 && <Row title="My List" movies={list} />}
           <Row title="Comedies" movies={comedyMovies} />
           <Row title="Scary Movies" movies={horrorMovies} />
           <Row title="Romance Movies" movies={romanceMovies} />
@@ -96,7 +97,7 @@ export const getServerSideProps = async () => {
   const productdatas = (await getDocs(collection(db, "products"))).docs;
   let products = [];
   let i = 0;
-  let productsId = [];
+  let productsId:any = [];
   productdatas.forEach((doc) => {
     console.log(doc.id, " => ", doc.data());
     productsId[i] = { id: doc.id, data: doc.data() };

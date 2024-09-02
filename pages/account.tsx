@@ -103,9 +103,9 @@ export default Account;
 
 export const getStaticProps: GetStaticProps = async () => {
   const productdatas = (await getDocs(collection(db, "products"))).docs;
-  let products = [];
+  let products:any = [];
   let i = 0;
-  let productsId = [];
+  let productsId:any = [];
   productdatas.forEach((doc) => {
     productsId[i] = { id: doc.id, data: doc.data() };
     i++;

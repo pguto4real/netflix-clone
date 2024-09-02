@@ -12,7 +12,7 @@ export default function Table({ products,selectedPlan  }: Props) {
       <tbody className="divide-y divide-[gray]">
         <tr className="tableRow">
           <td className="tableDataTitle">Monthly Price</td>
-          {products.map((product) => (
+          {products.map((product:any) => (
             <td key={product.id}  className={`tableDataFeature ${
                 selectedPlan?.id === product.id
                   ? 'text-[#e50914]'
