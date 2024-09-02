@@ -286,7 +286,7 @@ export default function Modal() {
               </h1>
 
               <div className="flex flex-wrap justify-center lg:justify-normal">
-                {relatedMovies.map((relatedMovie) => (
+                {relatedMovies.map((relatedMovie:any) => (
                   <Related
                     key={relatedMovie?.id}
                     relatedMovieId={relatedMovie?.id}
