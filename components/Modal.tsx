@@ -51,9 +51,11 @@ export default function Modal() {
   };
   const handleClose = () => {
     setShowModal(false);
+    setMovie(null);
   };
 
   useEffect(() => {
+    console.log('showModal',showModal)
     if (!movie) return;
 
     async function fetchMovie() {
@@ -68,8 +70,9 @@ export default function Modal() {
         .catch((err) => console.log(err.message));
 
       if (data?.videos) {
+       
         const index = data.videos.results.findIndex(
-          (element: Element) => element.type === "Trailer"
+          (element: Element) => element?.type === "Trailer"
         );
         setTrailer(data.videos?.results[index]?.key);
       }
@@ -192,6 +195,7 @@ export default function Modal() {
         <div className="relative pt-[56.25%] ">
           <ReactPlayer
             url={`https://www.youtube.com/watch?v=${trailer}`}
+            poster
             width="100%"
             height="100%"
             style={{ position: "absolute", top: "0", left: "0" }}

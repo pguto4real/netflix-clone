@@ -21,6 +21,7 @@ export interface Genre {
     poster_path: string
     vote_average: number
     vote_count: number
+    
   }
   
   export interface Element {

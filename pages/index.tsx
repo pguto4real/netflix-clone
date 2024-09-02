@@ -60,6 +60,7 @@ const Home = ({
   const list = useList(user?.uid);
   if (loading) return <div className=" bg-black/75">Loading</div>;
 
+ 
   if (!subscription) return <Plans products={products} />;
   return (
     <div
@@ -97,11 +98,13 @@ export const getServerSideProps = async () => {
   let i = 0;
   let productsId = [];
   productdatas.forEach((doc) => {
+    console.log(doc.id, " => ", doc.data());
     productsId[i] = { id: doc.id, data: doc.data() };
     i++;
   });
 
   for (let index = 0; index < productsId.length; index++) {
+    console.log(productsId[index]);
     const postRef = collection(db, "products", productsId[index].id, "prices");
     const q = query(postRef);
     const pricesQuerySnap = await getDocs(q);
@@ -111,6 +114,9 @@ export const getServerSideProps = async () => {
       priceId: item.id,
       prices: item.data(),
     }));
+    console.log(pricesQuerySnap);
+    console.log(post);
+    products.push(post[0]);
   }
 
   const [
