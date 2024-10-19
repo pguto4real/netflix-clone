@@ -1,18 +1,26 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Movie } from "../typing";
 import Thumbnail from "./Thumbnail";
 
 interface Props {
   title: string;
-  movies: Movie[]|any ;
+  movies: Movie[] | any;
 }
 
 function Row({ title, movies }: Props) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
-
+  const [validMovies, setValidMovies] = useState<Movie[]>([]);
+  const checkImage = (url: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const img = document.createElement("img"); // Create an image element
+      img.src = url;
+      img.onload = () => resolve(true); // Image loaded
+      img.onerror = () => resolve(false); // Image failed to load
+    });
+  };
   const handleClick = (direction: string) => {
     setIsMoved(true);
 
@@ -27,6 +35,22 @@ function Row({ title, movies }: Props) {
       rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
+  useEffect(() => {
+    const validateMovies = async () => {
+      const validatedMovies = await Promise.all(
+        movies.map(async (movie: Movie) => {
+          const imageUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Adjust based on your image URL structure
+          const isValid = await checkImage(imageUrl);
+          return isValid ? movie : null; // Return the movie if the image is valid, else null
+        })
+      );
+
+      // Filter out null values
+      setValidMovies(validatedMovies.filter(Boolean) as Movie[]);
+    };
+
+    validateMovies();
+  }, [movies]);
 
   return (
     <div className="h-40 space-y-0.5 md:space-y-2">
@@ -47,7 +71,7 @@ function Row({ title, movies }: Props) {
           ref={rowRef}
           className="flex items-center space-x-0.5 overflow-x-scroll scrollbar-hide md:space-x-2.5 md:p-2"
         >
-          {movies.map((movie:any) => (
+          {validMovies.map((movie: any) => (
             <Thumbnail key={movie.id} movie={movie} />
           ))}
         </div>

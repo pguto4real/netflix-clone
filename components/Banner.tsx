@@ -1,7 +1,6 @@
 import { modalState, movieState } from "@/atoms/modalAtoms";
 import { imageBaseUrl } from "@/constant/movie";
 import { Movie } from "@/typing";
-import { InformationCircleIcon } from "@heroicons/react/solid";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BsInfoCircle } from "react-icons/bs";
@@ -13,9 +12,35 @@ interface Props {
 }
 
 export default function Banner({ netflixOriginals }: Props) {
-  const [movie, setMovie] = useState<Movie | null>(null)
-  const [showModal, setShowModal] = useRecoilState(modalState)
-  const [currentMovie, setCurrentMovie] = useRecoilState(movieState)
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [showModal, setShowModal] = useRecoilState(modalState);
+  const [currentMovie, setCurrentMovie] = useRecoilState(movieState);
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+ // Check if the image URL is valid
+ const checkImage = (url: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const img = document.createElement('img'); // Create an image element
+    img.src = url;
+    img.onload = () => resolve(true); // Image loaded
+    img.onerror = () => resolve(false); // Image failed to load
+  });
+};
+
+// Validate the image once the movie is set
+useEffect(() => {
+  const validateImage = async () => {
+    if (movie) {
+      const backdropUrl = `${imageBaseUrl}${movie.backdrop_path || movie.poster_path}`;
+      const isImageValid = await checkImage(backdropUrl);
+      setImageLoaded(isImageValid);
+    }
+  };
+
+  validateImage();
+}, [movie]);
+
+const backdropUrl = movie ? `${imageBaseUrl}${movie.backdrop_path || movie.poster_path}` : '';
+
   useEffect(() => {
     setMovie(
       netflixOriginals[Math.floor(Math.random() * netflixOriginals.length)]
@@ -23,14 +48,14 @@ export default function Banner({ netflixOriginals }: Props) {
  
   }, [netflixOriginals]);
 
-  
+  console.log(backdropUrl)
   return (
     <div className="flex pl-4 flex-col bottom-[35%] py-16 md:space-y-4 lg:h-[65vh] lg:justify-end lg:pl-10">
       <div className="absolute top-0 left-0 h-[95vh] w-screen -z-10">
         {
           <Image
             className="w-[100%] object-cover"
-            src={`${imageBaseUrl}${movie?.backdrop_path || movie?.poster_path}`}
+            src={backdropUrl  || ""}
             fill 
             sizes=""
             alt=""

@@ -53,9 +53,15 @@ export default function Modal() {
     setShowModal(false);
     setMovie(null);
   };
-
+  function checkImage(url:string) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(true); // Image loaded
+      img.onerror = () => resolve(false); // Image failed to load
+    });
+  }
   useEffect(() => {
-    console.log('showModal',showModal)
     if (!movie) return;
 
     async function fetchMovie() {
@@ -70,7 +76,6 @@ export default function Modal() {
         .catch((err) => console.log(err.message));
 
       if (data?.videos) {
-       
         const index = data.videos.results.findIndex(
           (element: any) => element?.type === "Trailer"
         );
@@ -112,14 +117,29 @@ export default function Modal() {
       // return[execute] the dataArray when it completes::don't really need the console.log but helps to check
       return dataArray;
     }
-    async function fetchRelatedMovie() {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movie?.id}/similar?api_key=${process.env.NEXT_PUBLIC_API_KEY}`
-      )
-        .then((response) => response.json())
-        .catch((err) => console.log(err.message));
 
-      setRelatedMovies(shuffle(data.results).slice(0, 8));
+    async function fetchRelatedMovie() {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/${movie?.id}/similar?api_key=${process.env.NEXT_PUBLIC_API_KEY}`
+      );
+      const data = await response.json();
+
+      const moviesToDisplay = [];
+
+      for (const movie of data.results) {
+        if (movie.poster_path) {
+          const imageUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+
+          // Check if the image is available
+          const imageAvailable = await checkImage(imageUrl);
+         
+          if (imageAvailable) {
+            moviesToDisplay.push(movie);
+          }
+        }
+      }
+
+      setRelatedMovies(shuffle(moviesToDisplay).slice(0, 8));
     }
 
     fetchMovie();
@@ -133,7 +153,7 @@ export default function Modal() {
         (snapshot) => setMovies(snapshot.docs)
       );
     }
-  }, [movie?.id,user]);
+  }, [movie?.id, user]);
   const checkIfInList = (id: any) => {
     return movies.findIndex((result) => result.data().id === id) !== -1;
   };
@@ -286,7 +306,7 @@ export default function Modal() {
               </h1>
 
               <div className="flex flex-wrap justify-center lg:justify-normal">
-                {relatedMovies.map((relatedMovie:any) => (
+                {relatedMovies.map((relatedMovie: any) => (
                   <Related
                     key={relatedMovie?.id}
                     relatedMovieId={relatedMovie?.id}

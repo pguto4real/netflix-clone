@@ -58,7 +58,7 @@ const Home = ({
   const showModal = useRecoilValue(modalState);
   const subscription = useSubscription(user);
   const list = useList(user?.uid);
-  console.log(typeof list)
+ 
   if (loading) return <div className=" bg-black/75">Loading</div>;
 
  
@@ -99,13 +99,12 @@ export const getServerSideProps = async () => {
   let i = 0;
   let productsId:any = [];
   productdatas.forEach((doc) => {
-    console.log(doc.id, " => ", doc.data());
+
     productsId[i] = { id: doc.id, data: doc.data() };
     i++;
   });
 
   for (let index = 0; index < productsId.length; index++) {
-    console.log(productsId[index]);
     const postRef = collection(db, "products", productsId[index].id, "prices");
     const q = query(postRef);
     const pricesQuerySnap = await getDocs(q);

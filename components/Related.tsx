@@ -22,7 +22,12 @@ export default function Related({
   {
     release_date = movie?.first_air_date?movie?.first_air_date.split("-")[0]:""
   }
-
+  const baseUrl = 'https://image.tmdb.org/t/p/w500';
+    
+  // Decode the paths if necessary (not usually required since TMDb should provide valid paths)
+  const backdropPath = decodeURIComponent(movie.backdrop_path || movie.poster_path);
+ 
+  const imageUrl = `${baseUrl}${backdropPath}`;
   return (
     <>
       <div className="border-2 w-[50%] my-2 md:w-[30%] lg:w-[23%]  bg-[#2f2f2f] mx-2">
@@ -36,9 +41,7 @@ export default function Related({
         >
           <Image
             className="rounded-sm object-cover  md:rounded"
-            src={`https://image.tmdb.org/t/p/w500${
-              movie.backdrop_path || movie.poster_path
-            }`}
+            src={imageUrl}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
