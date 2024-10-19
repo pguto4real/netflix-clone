@@ -76,15 +76,15 @@ const Home = ({
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
-          <Row title="Trending Now" movies={trendingNow} />
-          <Row title="Top Rated" movies={topRated} />
-          <Row title="Action Thrillers" movies={actionMovies} />
+          <Row title="Trending Now" movies={trendingNow} linkId={"tred"} />
+          <Row title="Top Rated" movies={topRated} linkId={"top"} />
+          <Row title="Action Thrillers" movies={actionMovies} linkId={"action"} />
           {/* My List Component */}
-          {list && list.length > 0 && <Row title="My List" movies={list} />}
-          <Row title="Comedies" movies={comedyMovies} />
-          <Row title="Scary Movies" movies={horrorMovies} />
-          <Row title="Romance Movies" movies={romanceMovies} />
-          <Row title="Documentaries" movies={documentaries} />
+          {list && list.length > 0 && <Row title="My List" movies={list} linkId={"list"} />}
+          <Row title="comedy" movies={comedyMovies} linkId={"comedy"} />
+          <Row title="Scary Movies" movies={horrorMovies} linkId={"scary"} />
+          <Row title="Romance Movies" movies={romanceMovies} linkId={"romance"} />
+          <Row title="Documentaries" movies={documentaries} linkId={"doc"}  />
         </section>
       </main>
       {showModal && <Modal />}

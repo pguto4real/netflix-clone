@@ -7,9 +7,10 @@ import Thumbnail from "./Thumbnail";
 interface Props {
   title: string;
   movies: Movie[] | any;
+  linkId: string | any;
 }
 
-function Row({ title, movies }: Props) {
+function Row({ title, movies,linkId }: Props) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
   const [validMovies, setValidMovies] = useState<Movie[]>([]);
@@ -53,7 +54,7 @@ function Row({ title, movies }: Props) {
   }, [movies]);
 
   return (
-    <div className="h-40 space-y-0.5 md:space-y-2">
+    <div className="h-40 space-y-0.5 md:space-y-2" id={`${linkId}`}>
       <h2
         className="w-56 cursor-pointer text-sm font-semibold text-[#e5e5e5] transition duration-200
        hover:text-white md:text-2xl"
