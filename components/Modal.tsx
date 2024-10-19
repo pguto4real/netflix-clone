@@ -138,8 +138,8 @@ export default function Modal() {
           }
         }
       }
-
-      setRelatedMovies(shuffle(moviesToDisplay).slice(0, 8));
+// @ts-ignore
+      setRelatedMovies(shuffle(moviesToDisplay ).slice(0, 8));
     }
 
     fetchMovie();
